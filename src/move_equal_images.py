@@ -11,12 +11,12 @@ from .constants.colors import colors
 
 SUPPORTED_FILES_EXTENSIONS = 'png|jpg|jpeg'
 
-def move_equal_images(source_dir, target_dir):
+def move_equal_images(source_dir, target_dir, ext = None):
   if not exists(source_dir): return print(colors.FAIL, 'The source dir not exists', colors.RESET)
   if not exists(target_dir): return print(colors.FAIL, 'The target dir not exists', colors.RESET)
 
   onlyfiles = [filename for filename in listdir(source_dir) if isfile(join(source_dir, filename))]
-  onlyfiles = list(filter(lambda filename: re.search(f"^.*?\.({SUPPORTED_FILES_EXTENSIONS})$", filename), onlyfiles))
+  onlyfiles = [file for file in onlyfiles if re.search(f"^.*?\.({ext or SUPPORTED_FILES_EXTENSIONS})$", file)]
 
   filesToRemove = set()
   bar = tqdm(total=len(list(itertools.combinations(onlyfiles, 2))))
@@ -32,7 +32,7 @@ def move_equal_images(source_dir, target_dir):
 
     removePayload = (filenameB, fileB)
 
-    if(not diff.getbbox() and removePayload not in filesToRemove):
+    if(not diff.getbbox()):
       filesToRemove.add(removePayload)
 
     bar.update()
