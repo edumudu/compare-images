@@ -18,8 +18,11 @@ def move_equal_images(source_dir, target_dir, ext = None):
   onlyfiles = [filename for filename in listdir(source_dir) if isfile(join(source_dir, filename))]
   onlyfiles = [file for file in onlyfiles if re.search(f"^.*?\.({ext or SUPPORTED_FILES_EXTENSIONS})$", file)]
 
+  total_files = len(onlyfiles)
+  total_interations = (total_files * (total_files - 1)) / 2
+
   filesToRemove = set()
-  bar = tqdm(total=len(list(itertools.combinations(onlyfiles, 2))))
+  bar = tqdm(total=total_interations)
 
   for fileA, fileB in itertools.combinations(onlyfiles, 2):
     filenameA = join(source_dir, fileA)
