@@ -1,2 +1,4 @@
 trash/*
 images/*
+
+__pycache__
