@@ -24,8 +24,6 @@ def move_equal_images(source_dir, target_dir, ext = None):
   filesToRemove = set()
   hashes = []
 
-  print(colors.BLUE, f'\n {total_files} files finded \n', colors.RESET)
-
   for file in tqdm(onlyfiles, desc='Hashing images'):
     full_path = join(source_dir, file)
     img = Image.open(full_path)
@@ -62,8 +60,7 @@ def move_equal_images(source_dir, target_dir, ext = None):
   bar.close()
   print(colors.WARNING, '\n', len(filesToRemove), 'Files was marked to been removed \n', colors.RESET)
 
-  for oldPath, filename in filesToRemove:
+  for oldPath, filename in tqdm(filesToRemove, desc="Moving files"):
     newPath = join(target_dir, filename)
 
     rename(oldPath, pick_new_name(target_dir, filename) if exists(newPath) else newPath)
-    print(colors.FAIL, 'Moved "' + filename +'" to Trash', colors.RESET)
