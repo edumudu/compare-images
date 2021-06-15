@@ -7,6 +7,7 @@ from PIL import Image, ImageChops
 from tqdm import tqdm
 
 from .utils.naming import pick_new_name
+from .utils.hashing import image_to_hash
 from .constants.colors import colors
 
 SUPPORTED_FILES_EXTENSIONS = 'png|jpg|jpeg'
@@ -31,12 +32,11 @@ def move_equal_images(source_dir, target_dir, ext = None):
     imgA = Image.open(filenameA)
     imgB = Image.open(filenameB)
 
-    diff = ImageChops.difference(imgA.convert('CMYK'), imgB.convert('CMYK'))
+    hashA = image_to_hash(imgA)
+    hashB = image_to_hash(imgB)
 
-    removePayload = (filenameB, fileB)
-
-    if(not diff.getbbox()):
-      filesToRemove.add(removePayload)
+    if(hashA == hashB):
+      filesToRemove.add((filenameB, fileB))
 
     bar.update()
 
