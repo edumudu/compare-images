@@ -1,4 +1,3 @@
-import pathlib
 import argparse
 
 from os import getcwd
@@ -18,7 +17,6 @@ args = parser.parse_args()
 
 source_dir = join(getcwd(), args.sourcePath)
 target_dir = join(getcwd(), args.targetPath)
-dirPathTrash = join(pathlib.Path(__file__).parent.absolute(), 'trash')
 
 actions = {
   'compare': lambda *args: move_equal_images(*args)
