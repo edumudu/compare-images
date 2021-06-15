@@ -1,9 +1,8 @@
 import re
-import itertools
 
 from os import listdir, rename
 from os.path import isfile, join, exists
-from PIL import Image, ImageChops
+from PIL import Image
 from tqdm import tqdm
 
 from .utils.naming import pick_new_name
@@ -23,17 +22,22 @@ def move_equal_images(source_dir, target_dir, ext = None):
   total_interations = (total_files * (total_files - 1)) / 2
 
   filesToRemove = set()
-  bar = tqdm(total=total_interations)
+  hashes = []
 
+  print(colors.BLUE, f'\n {total_files} files finded \n', colors.RESET)
+
+  for file in tqdm(onlyfiles, desc='Hashing images'):
+    full_path = join(source_dir, file)
+    img = Image.open(full_path)
+    hashes.append(image_to_hash(img))
+
+  bar = tqdm(total=total_interations, desc='Comparing images')
   i = total_files
 
   while i > 0:
     i -= 1
 
-    fileA = onlyfiles[i]
-    filenameA = join(source_dir, fileA)
-    imgA = Image.open(filenameA)
-    hashA = image_to_hash(imgA)
+    hashA = hashes[i]
 
     j = i
 
@@ -41,13 +45,15 @@ def move_equal_images(source_dir, target_dir, ext = None):
       j -= 1
       delta = 1
 
-      fileB = onlyfiles[j]
-      filenameB = join(source_dir, fileB)
-      imgB = Image.open(filenameB)
-      hashB = image_to_hash(imgB)
+      hashB = hashes[j]
 
-      if(hashA == hashB):
+      if hashA == hashB:
+        fileB = onlyfiles[j]
+        filenameB = join(source_dir, fileB)
         filesToRemove.add((filenameB, fileB))
+        
+        del onlyfiles[j]
+        del hashes[j]
         i -= 1
         delta += i
 
