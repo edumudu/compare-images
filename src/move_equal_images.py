@@ -25,20 +25,33 @@ def move_equal_images(source_dir, target_dir, ext = None):
   filesToRemove = set()
   bar = tqdm(total=total_interations)
 
-  for fileA, fileB in itertools.combinations(onlyfiles, 2):
+  i = total_files
+
+  while i > 0:
+    i -= 1
+
+    fileA = onlyfiles[i]
     filenameA = join(source_dir, fileA)
-    filenameB = join(source_dir, fileB)
-
     imgA = Image.open(filenameA)
-    imgB = Image.open(filenameB)
-
     hashA = image_to_hash(imgA)
-    hashB = image_to_hash(imgB)
 
-    if(hashA == hashB):
-      filesToRemove.add((filenameB, fileB))
+    j = i
 
-    bar.update()
+    while j > 0:
+      j -= 1
+      delta = 1
+
+      fileB = onlyfiles[j]
+      filenameB = join(source_dir, fileB)
+      imgB = Image.open(filenameB)
+      hashB = image_to_hash(imgB)
+
+      if(hashA == hashB):
+        filesToRemove.add((filenameB, fileB))
+        i -= 1
+        delta += i
+
+      bar.update(delta)
 
   bar.close()
   print(colors.WARNING, '\n', len(filesToRemove), 'Files was marked to been removed \n', colors.RESET)
