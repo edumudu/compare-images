@@ -1,5 +1,6 @@
 from PIL import Image
 
+# https://stackoverflow.com/a/49692185/12734929
 def image_to_hash(img):
   simplified_image = img.resize((10, 10), Image.ANTIALIAS).convert('L')
 
