@@ -4,10 +4,11 @@ from os import getcwd
 from os.path import join
 
 from src.move_equal_images import move_equal_images
+from src.move_file_with_extensions import move_files
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('action', help='Action to be executed', choices=['compare'])
+parser.add_argument('action', help='Action to be executed', choices=['compare', 'move'])
 parser.add_argument('sourcePath', help='Dir path to be read')
 parser.add_argument('targetPath', help='Dir path to move files')
 
@@ -19,7 +20,8 @@ source_dir = join(getcwd(), args.sourcePath)
 target_dir = join(getcwd(), args.targetPath)
 
 actions = {
-  'compare': lambda *args: move_equal_images(*args)
+  'compare': lambda *args: move_equal_images(*args),
+  'move': lambda *args: move_files(*args),
 }
 
 handler = actions.get(args.action)
